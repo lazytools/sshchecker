@@ -52,10 +52,15 @@ func main() {
 	//	}
 
 	showBanner()
+
 	//adding scanner for reading the input from terminal
 	sc := bufio.NewScanner(os.Stdin)
 	for sc.Scan() {
 		ip := sc.Text()
+		//	hostsp := strings.Split(ip, "@")
+		//	userList = hostsp[0]
+		//	ip = hostsp[1]
+
 		fmt.Printf("Trying sshing on: %v \n", ip)
 		sshconfig := &gosshtool.SSHClientConfig{
 			User:     userList,
