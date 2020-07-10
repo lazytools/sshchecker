@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/projectdiscovery/gologger"
+	"github.com/scottkiss/gosshtool"
 )
 
 const banner = `
@@ -33,22 +34,19 @@ func main() {
 	sc := bufio.NewScanner(os.Stdin)
 	for sc.Scan() {
 		ip := sc.Text()
-		fmt.Printf("%v \n", ip)
-
-		//		sshconfig := &gosshtool.SSHClientConfig{
-		//			user:     "user",
-		//			Password: "pwd",
-		//			Host:     ip,
-		//		}
-		//		sshclient := gosshtool.NewSSHClient(sshconfig)
-		//		t.log(sshclient.Host)
-		//		stdout, stderr, session, err := sshclient.Cmd("pwd", nil, nil, 0)
-		//		if err != nil {
-		//			t.Error(err)
-		//
-		//		}
-		//		t.Log(stdout)
-		//		t.Log(stderr)
+		fmt.Printf("Trying sshing on: %v \n", ip)
+		sshconfig := &gosshtool.SSHClientConfig{
+			User:     "user",
+			Password: "pwd",
+			Host:     ip,
+		}
+		sshclient := gosshtool.NewSSHClient(sshconfig)
+		_, err := sshclient.Connect()
+		if err == nil {
+			fmt.Println("ssh successful")
+		} else {
+			fmt.Println("ssh failed")
+		}
 	}
 
 }
