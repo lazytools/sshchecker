@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"os"
 
@@ -17,8 +18,8 @@ const banner = `
  (__  |__  ) / / / /__/ / / /  __/ /__/ ,< /  __/ /    
 /____/____/_/ /_/\___/_/ /_/\___/\___/_/|_|\___/_/v1.0     
                                                        
-
 `
+const Version = `1.0`
 
 func showBanner() {
 	gologger.Printf("%s\n", banner)
@@ -28,7 +29,28 @@ func showBanner() {
 	gologger.Labelf("Developers assume no liability and are not responsible for any misuse or damage.\n\n")
 }
 
+var (
+	userList     string
+	passwordList string
+	//Version      bool
+)
+
+func ParseOptions() {
+
+	flag.StringVar(&userList, "U", "", "List of the default usernames of ssh")
+	flag.StringVar(&passwordList, "P", "", "List of the default passwords of ssh")
+	//flag.BoolVar(&Version, "version", false, "Show the version of sshchecker.")
+	flag.Parse()
+
+}
+
 func main() {
+	ParseOptions()
+	//	if Version {
+	//		gologger.Infof("Current Version: %s\n", Version)
+	//		os.Exit(0)
+	//	}
+
 	showBanner()
 	//adding scanner for reading the input from terminal
 	sc := bufio.NewScanner(os.Stdin)
@@ -36,8 +58,8 @@ func main() {
 		ip := sc.Text()
 		fmt.Printf("Trying sshing on: %v \n", ip)
 		sshconfig := &gosshtool.SSHClientConfig{
-			User:     "user",
-			Password: "pwd",
+			User:     userList,
+			Password: passwordList,
 			Host:     ip,
 		}
 		sshclient := gosshtool.NewSSHClient(sshconfig)
