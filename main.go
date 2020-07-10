@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"sync"
 
 	"github.com/projectdiscovery/gologger"
 	"github.com/scottkiss/gosshtool"
@@ -33,6 +34,7 @@ var (
 	userList     string
 	passwordList string
 	//Version      bool
+	concurrency int
 )
 
 func ParseOptions() {
@@ -40,6 +42,7 @@ func ParseOptions() {
 	flag.StringVar(&userList, "U", "", "List of the default usernames of ssh")
 	flag.StringVar(&passwordList, "P", "", "List of the default passwords of ssh")
 	//flag.BoolVar(&Version, "version", false, "Show the version of sshchecker.")
+	flag.IntVar(&concurrency, "c", 10, "set the concurrency level")
 	flag.Parse()
 
 }
@@ -54,26 +57,37 @@ func main() {
 	showBanner()
 
 	//adding scanner for reading the input from terminal
+	//	hostsp := strings.Split(ip, "@")
+	//	userList = hostsp[0]
+	//	ip = hostsp[1]
+	var wg sync.WaitGroup
+
 	sc := bufio.NewScanner(os.Stdin)
 	for sc.Scan() {
-		ip := sc.Text()
-		//	hostsp := strings.Split(ip, "@")
-		//	userList = hostsp[0]
-		//	ip = hostsp[1]
+		for i := 0; i < concurrency/2; i++ {
+			wg.Add(1)
 
-		fmt.Printf("Trying sshing on: %v \n", ip)
-		sshconfig := &gosshtool.SSHClientConfig{
-			User:     userList,
-			Password: passwordList,
-			Host:     ip,
-		}
-		sshclient := gosshtool.NewSSHClient(sshconfig)
-		_, err := sshclient.Connect()
-		if err == nil {
-			fmt.Println("ssh successful")
-		} else {
-			fmt.Println("ssh failed")
+			go func() {
+
+				ip := sc.Text()
+				fmt.Printf("Trying sshing on: %v \n", ip)
+				sshconfig := &gosshtool.SSHClientConfig{
+					User:     userList,
+					Password: passwordList,
+					Host:     ip,
+				}
+				sshclient := gosshtool.NewSSHClient(sshconfig)
+				_, err := sshclient.Connect()
+				if err == nil {
+					fmt.Println("ssh successful")
+				} else {
+					fmt.Println("ssh failed")
+				}
+
+				wg.Done()
+
+			}()
+
 		}
 	}
-
 }
