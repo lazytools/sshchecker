@@ -55,18 +55,18 @@ func main() {
 	//	}
 
 	showBanner()
-	f, err := os.Open(userList)
-	f.Close()
-	reader := bufio.NewReader(f)
-	var user string
-	for {
-		user, err = reader.ReadString('\n')
-		if err != nil {
-			break
-		}
-	}
+
 	var wg sync.WaitGroup
 
+	f, err := os.Open(userList)
+	if err != nil {
+		return
+	}
+	f.Close()
+	reader := bufio.NewScanner(f)
+	for reader.Scan() {
+		us := reader.Text()
+	}
 	//adding scanner for reading the input from terminal
 	sc := bufio.NewScanner(os.Stdin)
 	for sc.Scan() {
@@ -88,7 +88,7 @@ func main() {
 				fmt.Println("ssh failed")
 			}
 			wg.Done()
-		}(text)
+		}(text, us)
 	}
 	wg.Wait()
 }
