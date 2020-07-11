@@ -12,7 +12,6 @@ import (
 )
 
 const banner = `
-
               __         __              __            
    __________/ /_  _____/ /_  ___  _____/ /_____  _____
   / ___/ ___/ __ \/ ___/ __ \/ _ \/ ___/ //_/ _ \/ ___/
@@ -65,30 +64,31 @@ func main() {
 	f.Close()
 	reader := bufio.NewScanner(f)
 	for reader.Scan() {
-		us := reader.Text()
-	}
-	//adding scanner for reading the input from terminal
-	sc := bufio.NewScanner(os.Stdin)
-	for sc.Scan() {
-		text := sc.Text()
-		wg.Add(1)
+		username := reader.Text()
 
-		go func(ip string, user string) {
-			fmt.Printf("Trying sshing on: %v \n %s \n", ip, user)
-			sshconfig := &gosshtool.SSHClientConfig{
-				User:     user,
-				Password: passwordList,
-				Host:     ip,
-			}
-			sshclient := gosshtool.NewSSHClient(sshconfig)
-			_, err := sshclient.Connect()
-			if err == nil {
-				fmt.Println("ssh successful")
-			} else {
-				fmt.Println("ssh failed")
-			}
-			wg.Done()
-		}(text, us)
+		//adding scanner for reading the input from terminal
+		sc := bufio.NewScanner(os.Stdin)
+		for sc.Scan() {
+			text := sc.Text()
+			wg.Add(1)
+
+			go func(ip string, user string) {
+				fmt.Printf("Trying sshing on: %v \n %s \n", ip, user)
+				sshconfig := &gosshtool.SSHClientConfig{
+					User:     user,
+					Password: passwordList,
+					Host:     ip,
+				}
+				sshclient := gosshtool.NewSSHClient(sshconfig)
+				_, err := sshclient.Connect()
+				if err == nil {
+					fmt.Println("ssh successful")
+				} else {
+					fmt.Println("ssh failed")
+				}
+				wg.Done()
+			}(text, username)
+		}
+		wg.Wait()
 	}
-	wg.Wait()
 }
