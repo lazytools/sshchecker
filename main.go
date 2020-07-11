@@ -64,7 +64,7 @@ func main() {
 
 	sc := bufio.NewScanner(os.Stdin)
 	for sc.Scan() {
-		for i := 0; i < concurrency/2; i++ {
+		for i := 0; i < concurrency; i++ {
 			wg.Add(1)
 
 			go func() {
@@ -90,4 +90,5 @@ func main() {
 
 		}
 	}
+	wg.Wait()
 }
