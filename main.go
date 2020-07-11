@@ -32,15 +32,15 @@ func showBanner() {
 var (
 	userList     string
 	passwordList string
-	//Version      bool
-	concurrency int
+	concurrency  int
+	ShowVer      bool
 )
 
 func ParseOptions() {
 
 	flag.StringVar(&userList, "U", "", "List of the default usernames of ssh")
 	flag.StringVar(&passwordList, "P", "", "List of the default passwords of ssh")
-	//flag.BoolVar(&Version, "version", false, "Show the version of sshchecker.")
+	flag.BoolVar(&ShowVer, "version", false, "Show the version of sshchecker.")
 	flag.IntVar(&concurrency, "c", 10, "set the concurrency level")
 	flag.Parse()
 
@@ -48,22 +48,24 @@ func ParseOptions() {
 
 func main() {
 	ParseOptions()
-	//	if Version {
-	//		gologger.Infof("Current Version: %s\n", Version)
-	//		os.Exit(0)
-	//	}
+	if ShowVer {
+		gologger.Infof("Current Version: %s\n", Version)
+		os.Exit(0)
+	}
 
 	showBanner()
-
+	fmt.Println("Banner ended")
 	var wg sync.WaitGroup
 
 	f, err := os.Open(userList)
 	if err != nil {
+		fmt.Println("first if")
 		return
 	}
-	f.Close()
 	reader := bufio.NewScanner(f)
+	fmt.Println("for lop")
 	for reader.Scan() {
+		fmt.Println("inside reader")
 		username := reader.Text()
 
 		//adding scanner for reading the input from terminal
