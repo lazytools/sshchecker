@@ -64,31 +64,25 @@ func main() {
 
 	sc := bufio.NewScanner(os.Stdin)
 	for sc.Scan() {
-		for i := 0; i < concurrency; i++ {
-			wg.Add(1)
+		text := sc.Text()
+		wg.Add(1)
 
-			go func() {
-
-				ip := sc.Text()
-				fmt.Printf("Trying sshing on: %v \n", ip)
-				sshconfig := &gosshtool.SSHClientConfig{
-					User:     userList,
-					Password: passwordList,
-					Host:     ip,
-				}
-				sshclient := gosshtool.NewSSHClient(sshconfig)
-				_, err := sshclient.Connect()
-				if err == nil {
-					fmt.Println("ssh successful")
-				} else {
-					fmt.Println("ssh failed")
-				}
-
-				wg.Done()
-
-			}()
-
-		}
+		go func(ip string) {
+			fmt.Printf("Trying sshing on: %v \n", ip)
+			sshconfig := &gosshtool.SSHClientConfig{
+				User:     userList,
+				Password: passwordList,
+				Host:     ip,
+			}
+			sshclient := gosshtool.NewSSHClient(sshconfig)
+			_, err := sshclient.Connect()
+			if err == nil {
+				fmt.Println("ssh successful")
+			} else {
+				fmt.Println("ssh failed")
+			}
+			wg.Done()
+		}(text)
 	}
 	wg.Wait()
 }
