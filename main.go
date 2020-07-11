@@ -55,22 +55,28 @@ func main() {
 	//	}
 
 	showBanner()
-
-	//adding scanner for reading the input from terminal
-	//	hostsp := strings.Split(ip, "@")
-	//	userList = hostsp[0]
-	//	ip = hostsp[1]
+	f, err := os.Open(userList)
+	f.Close()
+	reader := bufio.NewReader(f)
+	var user string
+	for {
+		user, err = reader.ReadString('\n')
+		if err != nil {
+			break
+		}
+	}
 	var wg sync.WaitGroup
 
+	//adding scanner for reading the input from terminal
 	sc := bufio.NewScanner(os.Stdin)
 	for sc.Scan() {
 		text := sc.Text()
 		wg.Add(1)
 
-		go func(ip string) {
-			fmt.Printf("Trying sshing on: %v \n", ip)
+		go func(ip string, user string) {
+			fmt.Printf("Trying sshing on: %v \n %s \n", ip, user)
 			sshconfig := &gosshtool.SSHClientConfig{
-				User:     userList,
+				User:     user,
 				Password: passwordList,
 				Host:     ip,
 			}
