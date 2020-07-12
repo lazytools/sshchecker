@@ -102,5 +102,5 @@ func sshlogin(user string, ip string, pass string) {
 	}
 }
 
-//[TODO] Take Username and password one by one
+//[TODO] Take Username and password one by one..
 //[TODO] Now try that username and password on each IP
