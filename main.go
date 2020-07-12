@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"sync"
 
 	"github.com/projectdiscovery/gologger"
 	"github.com/scottkiss/gosshtool"
@@ -54,43 +53,54 @@ func main() {
 		os.Exit(0)
 	}
 
-	fmt.Println("Banner ended")
-	var wg sync.WaitGroup
+	//	var wg sync.WaitGroup
+	//To Read the flag userlist
+	reader(userList)
+	//To read the flag passwordlist
+	reader(passwordList)
+	//adding scanner for reading the input from terminal
+	//	sc := bufio.NewScanner(os.Stdin)
+	//	for sc.Scan() {
+	//		text := sc.Text()
+	//		wg.Add(1)
+	//
+	//		go func(ip string, user string, pass string) {
+	//			fmt.Printf("Trying sshing on: %v with user: %s\n", ip, user)
+	//			sshlogin(user, pass, ip)
+	//			wg.Done()
+	//		}(text, user, pass)
+	//	}
+	//	wg.Wait()
+}
 
-	f, err := os.Open(userList)
+//[TODO] Reading text function.
+func reader(text string) {
+	f, err := os.Open(text)
 	if err != nil {
-		fmt.Println("first if")
 		return
 	}
-	reader := bufio.NewScanner(f)
-	fmt.Println("for lop")
-	for reader.Scan() {
-		fmt.Println("inside reader")
-		username := reader.Text()
-
-		//adding scanner for reading the input from terminal
-		sc := bufio.NewScanner(os.Stdin)
-		for sc.Scan() {
-			text := sc.Text()
-			wg.Add(1)
-
-			go func(ip string, user string) {
-				fmt.Printf("Trying sshing on: %v with user: %s\n", ip, user)
-				sshconfig := &gosshtool.SSHClientConfig{
-					User:     user,
-					Password: passwordList,
-					Host:     ip,
-				}
-				sshclient := gosshtool.NewSSHClient(sshconfig)
-				_, err := sshclient.Connect()
-				if err == nil {
-					fmt.Println("ssh successful")
-				} else {
-					fmt.Println("ssh failed")
-				}
-				wg.Done()
-			}(text, username)
-		}
-		wg.Wait()
+	sc := bufio.NewScanner(f)
+	for sc.Scan() {
+		text := sc.Text()
+		fmt.Println(text)
 	}
 }
+
+func sshlogin(user string, ip string, pass string) {
+
+	sshconfig := &gosshtool.SSHClientConfig{
+		User:     user,
+		Password: pass,
+		Host:     ip,
+	}
+	sshclient := gosshtool.NewSSHClient(sshconfig)
+	_, err := sshclient.Connect()
+	if err == nil {
+		fmt.Println("ssh successful")
+	} else {
+		fmt.Println("ssh failed")
+	}
+}
+
+//[TODO] Take Username and password one by one
+//[TODO] Now try that username and password on each IP
