@@ -48,12 +48,12 @@ func ParseOptions() {
 
 func main() {
 	ParseOptions()
+	showBanner()
 	if ShowVer {
 		gologger.Infof("Current Version: %s\n", Version)
 		os.Exit(0)
 	}
 
-	showBanner()
 	fmt.Println("Banner ended")
 	var wg sync.WaitGroup
 
@@ -75,7 +75,7 @@ func main() {
 			wg.Add(1)
 
 			go func(ip string, user string) {
-				fmt.Printf("Trying sshing on: %v \n %s \n", ip, user)
+				fmt.Printf("Trying sshing on: %v with user: %s\n", ip, user)
 				sshconfig := &gosshtool.SSHClientConfig{
 					User:     user,
 					Password: passwordList,
