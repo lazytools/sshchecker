@@ -32,8 +32,8 @@ func showBanner() {
 var (
 	userList     string
 	passwordList string
-	concurrency  int
-	ShowVer      bool
+	//concurrency  int
+	ShowVer bool
 )
 
 func ParseOptions() {
@@ -41,7 +41,7 @@ func ParseOptions() {
 	flag.StringVar(&userList, "U", "", "List of the default usernames of ssh")
 	flag.StringVar(&passwordList, "P", "", "List of the default passwords of ssh")
 	flag.BoolVar(&ShowVer, "version", false, "Show the version of sshchecker.")
-	flag.IntVar(&concurrency, "c", 10, "set the concurrency level")
+	//flag.IntVar(&concurrency, "c", 10, "set the concurrency level")
 	flag.Parse()
 
 }
