@@ -47,6 +47,7 @@ func ParseOptions() {
 
 var userlistSlice []string
 var passwordSlice []string
+var ipStatus map[string]bool
 
 func main() {
 	userlistSlice := make([]string, 0)
@@ -64,6 +65,7 @@ func main() {
 	userlistSlice = reader(userList)
 	//To read the flag passwordlist
 	passwordSlice = reader(passwordList)
+	ipStatus = make(map[string]bool)
 	//reading userlist from the flag input.
 	/*for i := range userlistSlice {
 		fmt.Println("User List", i)
@@ -79,10 +81,11 @@ func main() {
 	for sc.Scan() {
 		text := sc.Text()
 		for _, usr := range userlistSlice {
-			for _, pwd := range passwordSlice {
-				fmt.Println("Calling ......", text, usr, pwd)
-				go bruteforce(text, usr, pwd)
-
+			fmt.Println("Checking ip ", text, ipStatus[text])
+			if ipStatus[text] == true {
+				break
+			} else {
+				go bruteforce(text, usr, passwordSlice)
 			}
 		}
 		fmt.Println(text)
@@ -90,9 +93,12 @@ func main() {
 	}
 }
 
-func bruteforce(ip string, user string, pass string) {
+func bruteforce(ip string, user string, pass []string) {
+	fmt.Println(pass)
 	fmt.Printf("Trying sshing on: %v with user: %s\n", ip, user)
-	sshlogin(user, pass, ip)
+	//	for _, pwd := range passwordSlice {
+	//		sshlogin(user, pwd, ip)
+	//	}
 }
 
 //[TODO] Reading text function.
@@ -124,10 +130,11 @@ func sshlogin(user string, ip string, pass string) {
 	_, err := sshclient.Connect()
 	if err == nil {
 		fmt.Println("ssh successful")
+		ipStatus[ip] = true
 	} else {
 		fmt.Println("ssh failed")
 	}
 }
 
 //[TODO] Take Username and password one by one..
-//[TODO] Now try that username and password on each IP
+//[TODO] Now try that username and password
