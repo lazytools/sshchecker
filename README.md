@@ -1,6 +1,6 @@
 # sshchecker
 
-[![Build Status](https://travis-ci.com/Sc0rpion2/sshchecker.svg?branch=master)](https://travis-ci.com/Sc0rpion2/sshchecker)
+[![Build Status](https://travis-ci.com/Sc0rpion2/sshchecker.svg?token=S9wbQbp5C4dcPWszHpyt&branch=master)](https://travis-ci.com/Sc0rpion2/sshchecker)
 
 sshchecker is a fast tool to check ssh login on giving ips.
 
