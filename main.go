@@ -31,8 +31,8 @@ func showBanner() {
 var (
 	userList     string
 	passwordList string
-	//concurrency  int
-	ShowVer bool
+	concurrency  int
+	ShowVer      bool
 )
 
 func ParseOptions() {
