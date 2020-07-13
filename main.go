@@ -45,10 +45,12 @@ func ParseOptions() {
 
 }
 
-var userlist_Array []string
-var password_Array []string
+var userlistSlice []string
+var passwordSlice []string
 
 func main() {
+	userlistSlice := make([]string, 0)
+	passwordSlice := make([]string, 0)
 	ParseOptions()
 	showBanner()
 	if ShowVer {
@@ -59,13 +61,26 @@ func main() {
 	//var wg sync.WaitGroup
 
 	//To Read the flag userlist
-	reader(userList)
+	userlistSlice = reader(userList)
 	//To read the flag passwordlist
-	reader(passwordList)
+	passwordSlice = reader(passwordList)
+
+	for i := range userlistSlice {
+		fmt.Println("User List", i)
+	}
+
+	for j := range passwordSlice {
+		fmt.Println("password List", j)
+	}
+
 	//adding scanner for reading the input from terminal
 	sc := bufio.NewScanner(os.Stdin)
 	for sc.Scan() {
 		text := sc.Text()
+
+		go bruteforce()
+		fmt.Println(text)
+
 	}
 }
 
@@ -75,19 +90,21 @@ func bruteforce(ip string, user string, pass string) {
 }
 
 //[TODO] Reading text function.
-func reader(text string) {
-	var empty_Array []string
+func reader(text string) []string {
+	emptyArray := make([]string, 0)
 	f, err := os.Open(text)
 	if err != nil {
-		return
+		emptyArray = append(emptyArray, "error occured")
+		return emptyArray
 	}
 	index := 0
 	sc := bufio.NewScanner(f)
 	for sc.Scan() {
 		text := sc.Text()
-		empty_Array = append(text, index)
+		emptyArray = append(emptyArray, text)
 		index++
 	}
+	return emptyArray
 }
 
 func sshlogin(user string, ip string, pass string) {
