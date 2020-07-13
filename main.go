@@ -45,6 +45,9 @@ func ParseOptions() {
 
 }
 
+var userlist_Array []string
+var password_Array []string
+
 func main() {
 	ParseOptions()
 	showBanner()
@@ -53,36 +56,37 @@ func main() {
 		os.Exit(0)
 	}
 
-	//	var wg sync.WaitGroup
+	//var wg sync.WaitGroup
+
 	//To Read the flag userlist
 	reader(userList)
 	//To read the flag passwordlist
 	reader(passwordList)
 	//adding scanner for reading the input from terminal
-	//	sc := bufio.NewScanner(os.Stdin)
-	//	for sc.Scan() {
-	//		text := sc.Text()
-	//		wg.Add(1)
-	//
-	//		go func(ip string, user string, pass string) {
-	//			fmt.Printf("Trying sshing on: %v with user: %s\n", ip, user)
-	//			sshlogin(user, pass, ip)
-	//			wg.Done()
-	//		}(text, user, pass)
-	//	}
-	//	wg.Wait()
+	sc := bufio.NewScanner(os.Stdin)
+	for sc.Scan() {
+		text := sc.Text()
+	}
+}
+
+func bruteforce(ip string, user string, pass string) {
+	fmt.Printf("Trying sshing on: %v with user: %s\n", ip, user)
+	sshlogin(user, pass, ip)
 }
 
 //[TODO] Reading text function.
 func reader(text string) {
+	var empty_Array []string
 	f, err := os.Open(text)
 	if err != nil {
 		return
 	}
+	index := 0
 	sc := bufio.NewScanner(f)
 	for sc.Scan() {
 		text := sc.Text()
-		fmt.Println(text)
+		empty_Array = append(text, index)
+		index++
 	}
 }
 
