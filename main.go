@@ -64,21 +64,27 @@ func main() {
 	userlistSlice = reader(userList)
 	//To read the flag passwordlist
 	passwordSlice = reader(passwordList)
-
-	for i := range userlistSlice {
+	//reading userlist from the flag input.
+	/*for i := range userlistSlice {
 		fmt.Println("User List", i)
 	}
 
 	for j := range passwordSlice {
 		fmt.Println("password List", j)
-	}
-
+	}*/
+	//Checking
 	//adding scanner for reading the input from terminal
 	sc := bufio.NewScanner(os.Stdin)
+
 	for sc.Scan() {
 		text := sc.Text()
+		for _, usr := range userlistSlice {
+			for _, pwd := range passwordSlice {
+				fmt.Println("Calling ......", text, usr, pwd)
+				go bruteforce(text, usr, pwd)
 
-		go bruteforce()
+			}
+		}
 		fmt.Println(text)
 
 	}
