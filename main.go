@@ -93,12 +93,12 @@ func main() {
 	}
 }
 
-func bruteforce(ip string, user string, pass []string) {
+func bruteforce(ip, user string, pass []string) {
 	fmt.Println(pass)
-	fmt.Printf("Trying sshing on: %v with user: %s\n", ip, user)
-	//	for _, pwd := range passwordSlice {
-	//		sshlogin(user, pwd, ip)
-	//	}
+	//fmt.Printf("Trying sshing on: %v with user: %s\n", ip, user)
+	for _, pwd := range pass {
+		sshlogin(user, pwd, ip)
+	}
 }
 
 //[TODO] Reading text function.
@@ -119,7 +119,7 @@ func reader(text string) []string {
 	return emptyArray
 }
 
-func sshlogin(user string, ip string, pass string) {
+func sshlogin(user, ip, pass string) {
 
 	sshconfig := &gosshtool.SSHClientConfig{
 		User:     user,
