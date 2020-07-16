@@ -35,6 +35,7 @@ var (
 	userlistSlice []string
 	passwordSlice []string
 	ipStatus      map[string]bool
+	Verbose       bool
 )
 
 func ParseOptions() {
@@ -43,6 +44,7 @@ func ParseOptions() {
 	flag.StringVar(&passwordList, "P", "", "List of the default passwords of ssh")
 	flag.BoolVar(&ShowVer, "version", false, "Show the version of sshchecker.")
 	//flag.IntVar(&concurrency, "c", 10, "set the concurrency level")
+	flag.BoolVar(&Verbose, "v", false, "Show tool in verbose mode.")
 	flag.Parse()
 
 }
@@ -76,7 +78,10 @@ func main() {
 				break
 			} else {
 				go bruteforce(text, usr, passwordSlice)
-				fmt.Printf("Trying %v, %v, %v\n", text, usr, passwordSlice)
+				if Verbose == true {
+					fmt.Printf("Trying %v, %v, %v\n", text, usr, passwordSlice)
+
+				}
 			}
 		}
 
