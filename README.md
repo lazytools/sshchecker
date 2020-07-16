@@ -15,3 +15,7 @@ sshchecker is a fast tool to check ssh login on giving ips.
 ```bash
 ▶ cat urls.txt | sshchecker
 ```
+## Flags
+```bash
+sshchecker -h
+```
