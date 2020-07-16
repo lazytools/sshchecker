@@ -76,23 +76,17 @@ func main() {
 		for _, usr := range userlistSlice {
 
 			for _, pwd := range passwordSlice {
-				go bruteforce(text, usr, pwd)
+				go sshlogin(usr, text, pwd)
 			}
 			if ipStatus[text] == true {
 				break
 			} else {
 				for _, pwd := range passwordSlice {
-					go bruteforce(text, usr, pwd)
+					go sshlogin(usr, text, pwd)
 				}
 			}
 		}
 	}
-}
-
-func bruteforce(ip, user string, pass string) {
-	//fmt.Println(pass)
-	//fmt.Printf("Trying sshing on: %v with user: %s\n", ip, user)
-	sshlogin(user, ip, pass)
 }
 
 //[TODO] Reading text function.
