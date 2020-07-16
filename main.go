@@ -72,18 +72,17 @@ func main() {
 
 	for sc.Scan() {
 		text := sc.Text()
-		fmt.Printf("Bruteforcing on %v\n", text)
+		gologger.Infof("Bruteforcing on => %v\n", text)
 		for _, usr := range userlistSlice {
+
+			for _, pwd := range passwordSlice {
+				go bruteforce(text, usr, pwd)
+			}
 			if ipStatus[text] == true {
-				fmt.Printf("Success Login on \n%v", text)
 				break
 			} else {
 				for _, pwd := range passwordSlice {
 					go bruteforce(text, usr, pwd)
-					if Verbose == true {
-						fmt.Printf("[+]Trying ssh login on %v = %v:%v\n", text, usr, pwd)
-
-					}
 				}
 			}
 		}
@@ -124,8 +123,13 @@ func sshlogin(user, ip, pass string) {
 	sshclient := gosshtool.NewSSHClient(sshconfig)
 	_, err := sshclient.Connect()
 	if err == nil {
-		fmt.Println("[+]ssh successful")
+		fmt.Printf("[+]Trying ssh login on %v => %v:%v([+]ssh Success)\n", ip, user, pass)
 		ipStatus[ip] = true
+	} else {
+		if Verbose == true {
+			gologger.Errorf("Trying ssh login on %v => %v:%v\n", ip, user, pass)
+
+		}
 	}
 
 }
