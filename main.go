@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"sync"
 
 	"github.com/projectdiscovery/gologger"
 	"github.com/scottkiss/gosshtool"
@@ -59,7 +60,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	//var wg sync.WaitGroup
+	var wg sync.WaitGroup
 
 	//To Read the flag userlist
 	userlistSlice = reader(userList)
@@ -69,23 +70,20 @@ func main() {
 
 	//adding scanner for reading the input from terminal
 	sc := bufio.NewScanner(os.Stdin)
-
 	for sc.Scan() {
 		text := sc.Text()
 		gologger.Infof("Bruteforcing on => %v\n", text)
 		for _, usr := range userlistSlice {
-
 			for _, pwd := range passwordSlice {
-				go sshlogin(usr, text, pwd)
+				wg.Add(1)
+				go sshlogin(usr, text, pwd, &wg)
 				if ipStatus[text] == true {
 					break
-				} else {
-					go sshlogin(usr, text, pwd)
-
 				}
 			}
 		}
 	}
+	wg.Wait()
 }
 
 //[TODO] Reading text function.
@@ -106,8 +104,7 @@ func reader(text string) []string {
 	return emptyArray
 }
 
-func sshlogin(user, ip, pass string) {
-
+func sshlogin(user, ip, pass string, wg *sync.WaitGroup) {
 	sshconfig := &gosshtool.SSHClientConfig{
 		User:     user,
 		Password: pass,
@@ -124,5 +121,6 @@ func sshlogin(user, ip, pass string) {
 
 		}
 	}
+	wg.Done()
 
 }
