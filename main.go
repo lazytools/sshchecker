@@ -22,7 +22,7 @@ const Version = `1.0`
 
 func showBanner() {
 	gologger.Printf("%s\n", banner)
-	gologger.Printf("\t\tCreated by Shazeb.\n\n")
+	gologger.Printf("\t\tCreated by lazytools.\n\n")
 
 	gologger.Labelf("Use with caution. You are responsible for your actions\n")
 	gologger.Labelf("Developers assume no liability and are not responsible for any misuse or damage.\n\n")
