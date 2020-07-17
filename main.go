@@ -77,12 +77,11 @@ func main() {
 
 			for _, pwd := range passwordSlice {
 				go sshlogin(usr, text, pwd)
-			}
-			if ipStatus[text] == true {
-				break
-			} else {
-				for _, pwd := range passwordSlice {
+				if ipStatus[text] == true {
+					break
+				} else {
 					go sshlogin(usr, text, pwd)
+
 				}
 			}
 		}
