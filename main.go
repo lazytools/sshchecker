@@ -29,9 +29,9 @@ func showBanner() {
 }
 
 var (
-	userList      string
-	passwordList  string
-	concurrency   int
+	userList     string
+	passwordList string
+	//concurrency   int
 	ShowVer       bool
 	userlistSlice []string
 	passwordSlice []string
@@ -62,9 +62,8 @@ func main() {
 
 	var wg sync.WaitGroup
 
-	//To Read the flag userlist
+	//Reading username and password list.
 	userlistSlice = reader(userList)
-	//To read the flag passwordlist
 	passwordSlice = reader(passwordList)
 	ipStatus = make(map[string]bool)
 
@@ -76,7 +75,7 @@ func main() {
 		for _, usr := range userlistSlice {
 			for _, pwd := range passwordSlice {
 				wg.Add(1)
-				go sshlogin(usr, text, pwd, &wg)
+				go sshlogin(usr, text, pwd, &wg) //calling the sshlogin function to bruteforce.
 				if ipStatus[text] == true {
 					break
 				}
@@ -86,7 +85,7 @@ func main() {
 	wg.Wait()
 }
 
-//[TODO] Reading text function.
+//[TODO] Reading list function.
 func reader(text string) []string {
 	emptyArray := make([]string, 0)
 	f, err := os.Open(text)
@@ -104,6 +103,7 @@ func reader(text string) []string {
 	return emptyArray
 }
 
+//Bruteforce functions
 func sshlogin(user, ip, pass string, wg *sync.WaitGroup) {
 	sshconfig := &gosshtool.SSHClientConfig{
 		User:     user,
@@ -124,3 +124,10 @@ func sshlogin(user, ip, pass string, wg *sync.WaitGroup) {
 	wg.Done()
 
 }
+
+/* Blue Print
+1. Reading ip's from terminal in loop.
+2. reading Username and password files from flags
+3. Taking one IP, one user and multiple passwords to bruteforce.
+4. Want to add concurreny in password feild. So, it will work fast to complete bruteforcing.
+*/
