@@ -130,4 +130,4 @@ func sshlogin(user, ip, pass string, wg *sync.WaitGroup) {
 2. reading Username and password files from flags
 3. Taking one IP, one user and multiple passwords to bruteforce.
 4. Want to add concurreny in password feild. So, it will work fast to complete bruteforcing.
-*/
+test*/
