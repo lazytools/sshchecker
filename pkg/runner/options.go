@@ -29,4 +29,5 @@ func ParseOptions() *Options {
 		gologger.Infof("Current Version: %s\n", Version)
 		os.Exit(0)
 	}
+	return options
 }

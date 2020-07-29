@@ -6,8 +6,7 @@ import (
 	"os"
 	"sync"
 
-	"pkg/runner"
-
+	"github.com/lazytools/sshchecker/pkg/runner"
 	"github.com/projectdiscovery/gologger"
 	"github.com/scottkiss/gosshtool"
 )
@@ -22,11 +21,11 @@ func main() {
 	userlistSlice := make([]string, 0)
 	passwordSlice := make([]string, 0)
 
-	var wg sync.WaitGroup
 	options := runner.ParseOptions()
+	var wg sync.WaitGroup
 	//Reading username and password list.
-	userlistSlice = reader(userList)
-	passwordSlice = reader(passwordList)
+	userlistSlice = reader(options.UserList)
+	passwordSlice = reader(options.PasswordList)
 	ipStatus = make(map[string]bool)
 
 	//adding scanner for reading the input from terminal
@@ -78,11 +77,10 @@ func sshlogin(user, ip, pass string, wg *sync.WaitGroup) {
 		fmt.Printf("[+]Trying ssh login on %v => %v:%v([+]ssh Success)\n", ip, user, pass)
 		ipStatus[ip] = true
 	} else {
-		if Verbose == true {
-			gologger.Errorf("Trying ssh login on %v => %v:%v\n", ip, user, pass)
+		gologger.Errorf("Trying ssh login on %v => %v:%v\n", ip, user, pass)
 
-		}
 	}
+
 	wg.Done()
 
 }
