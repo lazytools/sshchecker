@@ -13,7 +13,7 @@ sshchecker is a fast tool to check ssh login on giving ips.
 ## usage
 
 ```bash
-▶ cat ips.txt | sshchecker
+▶ cat testfiles/ips.txt | sshchecker -U testfiles/testuser -P testfiles/testpass
 ```
 ## Flags
 ```bash
