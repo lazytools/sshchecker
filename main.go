@@ -65,10 +65,10 @@ func reader(text string) []string {
 	sc := bufio.NewScanner(f)
 	for sc.Scan() {
 		text := sc.Text()
-		emptyArray = append(emptyArray, text)
+		singlePass = append(singlePass, text)
 		index++
 	}
-	return emptyArray
+	return singlePass
 }
 
 //Bruteforce functions
