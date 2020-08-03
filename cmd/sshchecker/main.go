@@ -52,6 +52,12 @@ func main() {
 	options.Timeout = *timeout
 	options.Concurrency = *concurrencyLevel
 
+	processFromStdin(&options)
+
+	gologger.Infof("[+] EOF reached")
+}
+
+func processFromStdin(options *sshchecker.BatchOptions) {
 	scn := bufio.NewScanner(os.Stdin)
 	for scn.Scan() {
 		rawAddr := strings.TrimSpace(scn.Text())
@@ -66,16 +72,12 @@ func main() {
 			continue
 		}
 
-		if addr.Port == 0 {
-			addr.Port = 22
-		}
-
 		gologger.Infof("[+] Now processing address: %s (resolved from %s)", addr.String(), rawAddr)
 		output := make(chan *sshchecker.BatchResult)
 		var batchError error
 
 		go func() {
-			batchError = sshchecker.BatchTrySSHLogin(context.Background(), addr, &options, output)
+			batchError = sshchecker.BatchTrySSHLogin(context.Background(), addr, options, output)
 			close(output)
 		}()
 
@@ -92,8 +94,6 @@ func main() {
 			gologger.Warningf("[!] Error while batch logging in on %s: %v", addr.String(), batchError)
 		}
 	}
-
-	gologger.Infof("[+] EOF reached")
 }
 
 func parseFile(filename string) ([]string, error) {
