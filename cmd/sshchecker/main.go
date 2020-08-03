@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"flag"
+	"io"
 	"io/ioutil"
 	"net"
 	"os"
@@ -62,7 +63,16 @@ func main() {
 }
 
 func processFromStdin(ctx context.Context, options *sshchecker.BatchOptions) {
-	scn := bufio.NewScanner(os.Stdin)
+	// We use a pipe so we can close stdin upon context completion
+	rd, wr := io.Pipe()
+	go io.Copy(wr, os.Stdin)
+	go func() {
+		<-ctx.Done()
+		wr.Close()
+		rd.Close()
+	}()
+
+	scn := bufio.NewScanner(rd)
 	for scn.Scan() {
 		rawAddr := strings.TrimSpace(scn.Text())
 		if !strings.Contains(rawAddr, ":") {
@@ -97,10 +107,10 @@ func processFromStdin(ctx context.Context, options *sshchecker.BatchOptions) {
 		if batchError != nil {
 			gologger.Warningf("[!] Error while batch logging in on %s: %v", addr.String(), batchError)
 		}
+	}
 
-		if ctx.Err() != nil {
-			gologger.Fatalf("[!] quitting due to context error: %v", ctx.Err())
-		}
+	if ctx.Err() != nil {
+		gologger.Fatalf("[!] quitting due to context error: %v", ctx.Err())
 	}
 }
 
@@ -113,7 +123,6 @@ func contextWithSignal(parent context.Context) context.Context {
 		<-c
 		gologger.Infof("Ctrl+C received, gracefully cancelling...")
 		cancel()
-		os.Stdin.Close()
 	}()
 
 	return ctx
@@ -126,8 +135,14 @@ func parseFile(filename string) ([]string, error) {
 	}
 
 	rows := strings.Split(string(d), "\n")
-	for i, row := range rows {
-		rows[i] = strings.TrimSpace(row)
+	i := 0
+	for i < len(rows) {
+		rows[i] = strings.TrimSpace(rows[i])
+		if rows[i] == "" {
+			rows = append(rows[:i], rows[i+1:]...)
+			continue
+		}
+		i++
 	}
 	return rows, nil
 }
