@@ -23,6 +23,7 @@ func main() {
 	concurrencyLevel := flag.Int("c", 20, "set the concurrency level")
 	timeout := flag.Duration("t", 5*time.Second, "Connection timeout")
 	showVersion := flag.Bool("version", false, "Show current program version")
+	verbose := flag.Bool("v", false, "Show verbose output")
 	flag.Parse()
 	showBanner()
 	gologger.MaxLevel = gologger.Debug
@@ -101,14 +102,17 @@ func processFromStdin(ctx context.Context, options *sshchecker.BatchOptions) {
 			batchError = sshchecker.BatchTrySSHLogin(ctx, addr, options, output)
 			close(output)
 		}()
-
 		for out := range output {
 			if out.Error != nil {
-				gologger.Warningf("[!] Failed to login on %s with %s:%s, error: %v",
-					addr.String(), out.Username, out.Password, out.Error)
-				continue
+				if *verbose == true {
+					gologger.Warningf("[!] Failed to login on %s with %s:%s, error: %v",
+						addr.String(), out.Username, out.Password, out.Error)
+					continue
+				}
+
+				gologger.Infof("[+] Successful login on %s with %s:%s", addr.String(), out.Username, out.Password)
+
 			}
-			gologger.Infof("[+] Successful login on %s with %s:%s", addr.String(), out.Username, out.Password)
 		}
 
 		if batchError != nil {
