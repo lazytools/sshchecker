@@ -7,7 +7,9 @@ import (
 	"io/ioutil"
 	"net"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/1lann/sshchecker"
@@ -52,12 +54,14 @@ func main() {
 	options.Timeout = *timeout
 	options.Concurrency = *concurrencyLevel
 
-	processFromStdin(&options)
+	ctx := contextWithSignal(context.Background())
+
+	processFromStdin(ctx, &options)
 
 	gologger.Infof("[+] EOF reached")
 }
 
-func processFromStdin(options *sshchecker.BatchOptions) {
+func processFromStdin(ctx context.Context, options *sshchecker.BatchOptions) {
 	scn := bufio.NewScanner(os.Stdin)
 	for scn.Scan() {
 		rawAddr := strings.TrimSpace(scn.Text())
@@ -77,7 +81,7 @@ func processFromStdin(options *sshchecker.BatchOptions) {
 		var batchError error
 
 		go func() {
-			batchError = sshchecker.BatchTrySSHLogin(context.Background(), addr, options, output)
+			batchError = sshchecker.BatchTrySSHLogin(ctx, addr, options, output)
 			close(output)
 		}()
 
@@ -93,7 +97,26 @@ func processFromStdin(options *sshchecker.BatchOptions) {
 		if batchError != nil {
 			gologger.Warningf("[!] Error while batch logging in on %s: %v", addr.String(), batchError)
 		}
+
+		if ctx.Err() != nil {
+			gologger.Fatalf("[!] quitting due to context error: %v", ctx.Err())
+		}
 	}
+}
+
+func contextWithSignal(parent context.Context) context.Context {
+	ctx, cancel := context.WithCancel(parent)
+
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		gologger.Infof("Ctrl+C received, gracefully cancelling...")
+		cancel()
+		os.Stdin.Close()
+	}()
+
+	return ctx
 }
 
 func parseFile(filename string) ([]string, error) {
