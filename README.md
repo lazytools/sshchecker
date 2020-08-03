@@ -7,9 +7,22 @@ sshchecker is a fast tool to check ssh login on giving ips.
 ## Install
 
 ```bash
-▶ go get -u github.com/lazytools/sshchecker
+▶ go get -v github.com/lazytools/sshchecker/cmd/sshchecker
 ```
+## From Github
 
+```bash
+git clone https://github.com/lazytools/sshchecker.git
+cd sshchecker/cmd/sshchecker
+go build .
+mv sshchecker /usr/local/bin/
+sshchecker -h
+```
+##Upgrading
+
+```bash
+go get -u -v github.com/lazytools/sshchecker/cmd/sshchecker
+```
 ## usage
 
 ```bash
