@@ -18,7 +18,7 @@ go build .
 mv sshchecker /usr/local/bin/
 sshchecker -h
 ```
-##Upgrading
+## Upgrading
 
 ```bash
 go get -u -v github.com/lazytools/sshchecker/cmd/sshchecker
