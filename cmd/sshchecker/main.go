@@ -23,7 +23,7 @@ func main() {
 	concurrencyLevel := flag.Int("c", 20, "set the concurrency level")
 	timeout := flag.Duration("t", 5*time.Second, "Connection timeout")
 	showVersion := flag.Bool("version", false, "Show current program version")
-	verbose := flag.Bool("v", false, "Show verbose output")
+	//verbose := flag.Bool("v", false, "Show verbose output")
 	flag.Parse()
 	showBanner()
 	gologger.MaxLevel = gologger.Debug
@@ -104,24 +104,22 @@ func processFromStdin(ctx context.Context, options *sshchecker.BatchOptions) {
 		}()
 		for out := range output {
 			if out.Error != nil {
-				if *verbose == true {
-					gologger.Warningf("[!] Failed to login on %s with %s:%s, error: %v",
-						addr.String(), out.Username, out.Password, out.Error)
-					continue
-				}
-
-				gologger.Infof("[+] Successful login on %s with %s:%s", addr.String(), out.Username, out.Password)
-
+				gologger.Warningf("[!] Failed to login on %s with %s:%s, error: %v",
+					addr.String(), out.Username, out.Password, out.Error)
+				continue
 			}
+
+			gologger.Infof("[+] Successful login on %s with %s:%s", addr.String(), out.Username, out.Password)
+
 		}
 
 		if batchError != nil {
 			gologger.Warningf("[!] Error while batch logging in on %s: %v", addr.String(), batchError)
 		}
-	}
 
-	if ctx.Err() != nil {
-		gologger.Fatalf("[!] quitting due to context error: %v", ctx.Err())
+		if ctx.Err() != nil {
+			gologger.Fatalf("[!] quitting due to context error: %v", ctx.Err())
+		}
 	}
 }
 
