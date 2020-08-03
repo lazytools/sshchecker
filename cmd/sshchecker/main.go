@@ -65,7 +65,14 @@ func main() {
 func processFromStdin(ctx context.Context, options *sshchecker.BatchOptions) {
 	// We use a pipe so we can close stdin upon context completion
 	rd, wr := io.Pipe()
-	go io.Copy(wr, os.Stdin)
+	go func() {
+		_, err := io.Copy(wr, os.Stdin)
+		if err != nil {
+			wr.CloseWithError(err)
+		} else {
+			wr.CloseWithError(io.EOF)
+		}
+	}()
 	go func() {
 		<-ctx.Done()
 		wr.Close()
