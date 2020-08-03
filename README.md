@@ -20,4 +20,4 @@ sshchecker is a fast tool to check ssh login on giving ips.
 sshchecker -h
 ```
 ## TODO
-* Signal Killed issue
+* Add timeout for quick bruteforcing.

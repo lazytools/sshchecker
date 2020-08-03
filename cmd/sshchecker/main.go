@@ -23,12 +23,12 @@ func main() {
 	timeout := flag.Duration("t", 5*time.Second, "Connection timeout")
 	showVersion := flag.Bool("version", false, "Show current program version")
 	flag.Parse()
-
+	showBanner()
 	gologger.MaxLevel = gologger.Debug
 
 	if *showVersion {
-		showBanner()
-		return
+		gologger.Infof("Current Version: %s\n", Version)
+		os.Exit(0)
 	}
 
 	if *usernamesPath == "" || *passwordsPath == "" {
