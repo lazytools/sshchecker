@@ -50,7 +50,9 @@ func BatchTrySSHLogin(ctx context.Context, addr *net.TCPAddr, opts *BatchOptions
 			}
 
 			go func(username, password string) {
-				err := TrySSHLogin(addr, username, password, opts.Timeout)
+				subctx, cancel := context.WithTimeout(ctx, opts.Timeout)
+				err := TrySSHLogin(subctx, addr, username, password)
+				cancel()
 				output <- &BatchResult{
 					Username: username,
 					Password: password,
@@ -64,16 +66,23 @@ func BatchTrySSHLogin(ctx context.Context, addr *net.TCPAddr, opts *BatchOptions
 	return nil
 }
 
-func TrySSHLogin(addr *net.TCPAddr, user, pass string, timeout time.Duration) error {
+func TrySSHLogin(ctx context.Context, addr *net.TCPAddr, user, pass string) error {
 	sshConfig := &ssh.ClientConfig{
 		User:            user,
 		Auth:            []ssh.AuthMethod{ssh.Password(pass)},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	conn, err := ssh.Dial("tcp", addr.String(), sshConfig)
+	var dialer net.Dialer
+	conn, err := dialer.DialContext(ctx, "tcp", addr.String())
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	client, _, _, err := ssh.NewClientConn(conn, addr.String(), sshConfig)
 	if err == nil {
-		conn.Close()
+		client.Close()
 	}
 	return err
 }
