@@ -110,6 +110,7 @@ func processFromStdin(ctx context.Context, options *sshchecker.BatchOptions) {
 			}
 
 			gologger.Infof("[+] Successful login on %s with %s:%s", addr.String(), out.Username, out.Password)
+			break
 
 		}
 
