@@ -55,11 +55,11 @@ func main() {
 
 //Reading list function.
 func reader(text string) []string {
-	emptyArray := make([]string, 0)
+	singlePass := make([]string, 0)
 	f, err := os.Open(text)
 	if err != nil {
-		emptyArray = append(emptyArray, "error occured")
-		return emptyArray
+		singlePass = append(singlePass, "error occured")
+		return singlePass
 	}
 	index := 0
 	sc := bufio.NewScanner(f)
