@@ -13,7 +13,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/1lann/sshchecker"
+	"github.com/lazytools/sshchecker"
 	"github.com/projectdiscovery/gologger"
 )
 
