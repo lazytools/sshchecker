@@ -32,5 +32,3 @@ go get -u -v github.com/lazytools/sshchecker/cmd/sshchecker
 ```bash
 sshchecker -h
 ```
-## TODO
-* Add timeout for quick bruteforcing.
