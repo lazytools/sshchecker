@@ -33,4 +33,4 @@ go get -u -v github.com/lazytools/sshchecker/cmd/sshchecker
 sshchecker -h
 ```
 ## License
-sshchecker is coded with <3 by lazytools. See **[Thanks.md](https://github.com/lazytools/sshchecker/blob/master/Thanks.md)** for more details.
+sshchecker is coded with :heart: by lazytools. See **[Thanks.md](https://github.com/lazytools/sshchecker/blob/master/Thanks.md)** for more details.
