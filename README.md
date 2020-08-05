@@ -1,15 +1,17 @@
 # sshchecker
 
 [![Build Status](https://travis-ci.com/lazytools/sshchecker.svg?token=S9wbQbp5C4dcPWszHpyt&branch=master)](https://travis-ci.com/lazytools/sshchecker)
+[![License](https://img.shields.io/badge/license-MIT-_red.svg)](https://opensource.org/licenses/MIT)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/lazytools/sshchecker/issues)
 
 sshchecker is a fast dedicated ssh brute-forcing tool to check ssh login on the giving IP list.
 
-## Install
-
+# Installation Instruction
+### From Command Line
 ```bash
 ▶ go get -v github.com/lazytools/sshchecker/cmd/sshchecker
 ```
-## From Github
+### From Github
 
 ```bash
 git clone https://github.com/lazytools/sshchecker.git
@@ -18,19 +20,19 @@ go build .
 mv sshchecker /usr/local/bin/
 sshchecker -h
 ```
-## Upgrading
+### Upgrading
 
 ```bash
 go get -u -v github.com/lazytools/sshchecker/cmd/sshchecker
 ```
-## usage
+# Usage
 
 ```bash
 ▶ cat testfiles/ips.txt | sshchecker -U testfiles/testuser -P testfiles/testpass
 ```
-## Flags
+# Flags
 ```bash
 sshchecker -h
 ```
-## License
+# License
 sshchecker is coded with :heart: by lazytools. See **[Thanks.md](https://github.com/lazytools/sshchecker/blob/master/Thanks.md)** for more details.
