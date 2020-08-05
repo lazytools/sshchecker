@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/lazytools/sshchecker.svg?token=S9wbQbp5C4dcPWszHpyt&branch=master)](https://travis-ci.com/lazytools/sshchecker)
 
-sshchecker is a fast tool to check ssh login on giving ips.
+sshchecker is a fast dedicated ssh brute-forcing tool to check ssh login on the giving IP list.
 
 ## Install
 
