@@ -35,4 +35,4 @@ go get -u -v github.com/lazytools/sshchecker/cmd/sshchecker
 sshchecker -h
 ```
 # License
-sshchecker is made with :heart: in India :india: . See **[Thanks.md](https://github.com/lazytools/sshchecker/blob/master/Thanks.md)** for more details.
+sshchecker is made with :heart:&nbsp; in India :india: . See **[Thanks.md](https://github.com/lazytools/sshchecker/blob/master/Thanks.md)** for more details.
