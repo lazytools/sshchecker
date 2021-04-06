@@ -9,7 +9,7 @@ sshchecker is a fast dedicated ssh brute-forcing tool to check ssh login on the 
 # Installation Instruction
 ### From Command Line
 ```bash
-▶ go get -v github.com/lazytools/sshchecker/cmd/sshchecker
+▶ go get -u -v github.com/lazytools/sshchecker/cmd/sshchecker
 ```
 ### From Github
 
@@ -19,11 +19,6 @@ cd sshchecker/cmd/sshchecker
 go build .
 mv sshchecker /usr/local/bin/
 sshchecker -h
-```
-### Upgrading
-
-```bash
-go get -u -v github.com/lazytools/sshchecker/cmd/sshchecker
 ```
 # Usage
 
