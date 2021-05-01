@@ -30,4 +30,7 @@ sshchecker -h
 sshchecker -h
 ```
 # License
+See **[License](https://github.com/lazytools/sshchecker/blob/master/LICENSE)**
+
+# Creators
 sshchecker is made with :heart:&nbsp; in India :india: . See **[Thanks.md](https://github.com/lazytools/sshchecker/blob/master/Thanks.md)** for more details.
