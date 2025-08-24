@@ -95,13 +95,17 @@ func processFromStdin(ctx context.Context, options *sshchecker.BatchOptions) {
 		}
 
 		gologger.Infof("[+] Now processing address: %s (resolved from %s)", addr.String(), rawAddr)
+
+		ctxAddr, cancel := context.WithCancel(ctx)
 		output := make(chan *sshchecker.BatchResult)
 		var batchError error
 
 		go func() {
-			batchError = sshchecker.BatchTrySSHLogin(ctx, addr, options, output)
+			batchError = sshchecker.BatchTrySSHLogin(ctxAddr, addr, options, output)
 			close(output)
 		}()
+
+		success := false
 		for out := range output {
 			if out.Error != nil {
 				gologger.Warningf("[!] Failed to login on %s with %s:%s, error: %v",
@@ -109,10 +113,14 @@ func processFromStdin(ctx context.Context, options *sshchecker.BatchOptions) {
 				continue
 			}
 
-			gologger.Infof("[+] Successful login on %s with %s:%s", addr.String(), out.Username, out.Password)
-			break
-
+			if !success {
+				gologger.Infof("[+] Successful login on %s with %s:%s", addr.String(), out.Username, out.Password)
+				success = true
+				cancel()
+			}
 		}
+
+		cancel()
 
 		if batchError != nil {
 			gologger.Warningf("[!] Error while batch logging in on %s: %v", addr.String(), batchError)
@@ -127,7 +135,7 @@ func processFromStdin(ctx context.Context, options *sshchecker.BatchOptions) {
 func contextWithSignal(parent context.Context) context.Context {
 	ctx, cancel := context.WithCancel(parent)
 
-	c := make(chan os.Signal)
+	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
