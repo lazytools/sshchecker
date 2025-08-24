@@ -9,6 +9,7 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
+// BatchOptions defines the parameters for performing batch SSH login attempts.
 type BatchOptions struct {
 	UserList     []string
 	PasswordList []string
@@ -16,12 +17,15 @@ type BatchOptions struct {
 	Concurrency  int
 }
 
+// BatchResult captures the outcome of a single username and password attempt.
 type BatchResult struct {
 	Username string
 	Password string
 	Error    error
 }
 
+// BatchTrySSHLogin attempts SSH logins for all user and password combinations
+// concurrently and sends results through the output channel.
 func BatchTrySSHLogin(ctx context.Context, addr *net.TCPAddr, opts *BatchOptions, output chan<- *BatchResult) error {
 	if opts.Concurrency <= 0 {
 		return errors.New("sshchecker: invalid concurrency value")
@@ -66,6 +70,8 @@ func BatchTrySSHLogin(ctx context.Context, addr *net.TCPAddr, opts *BatchOptions
 	return nil
 }
 
+// TrySSHLogin attempts to authenticate to the given address using the provided
+// username and password.
 func TrySSHLogin(ctx context.Context, addr *net.TCPAddr, user, pass string) error {
 	sshConfig := &ssh.ClientConfig{
 		User:            user,
